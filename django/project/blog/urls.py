@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import TokenObtainPairView, ProtectedView
+from .views import TokenObtainPairView, ProtectedView, ProtectedEndpoint
 from rest_framework_simplejwt.views import TokenRefreshView
 
 
@@ -13,4 +13,6 @@ urlpatterns = [
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),  # 토큰 발행
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),  # 리프레시 토큰 사용
     path('api/protected/', ProtectedView.as_view(), name='protected_view'),  # Access Token 검증
+
+    path('protected-endpoint/', ProtectedEndpoint.as_view(), name='protected-endpoint'),    # 엔드포인트 설정
 ]
