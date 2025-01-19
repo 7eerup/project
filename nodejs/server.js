@@ -15,7 +15,12 @@ app.get('/', (req, res) => {
 // JSON 응답
 app.get('/api', (req, res) => {
     res.json({ message: 'Hello, API!' });
-  });
+});
+
+// 404 핸들링
+app.use((req, res) => {
+    res.status(404).send('Page Not Found');
+});
 
 // 서버 시작
 app.listen(PORT, () => {
