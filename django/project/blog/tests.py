@@ -1,10 +1,88 @@
-from django.test import TestCase
+import pytest
+from rest_framework.test import APIClient
+from rest_framework_simplejwt.tokens import RefreshToken
 
-# Create your tests here.
+from django.test import TestCase
 from rest_framework.test import APITestCase
 from rest_framework import status
 from django.contrib.auth.models import User
 
+
+@pytest.fixture
+def create_user(db):
+    """Creates a test user."""
+    user = User.objects.create_user(username='testuser', password='password123')
+    return user
+
+
+@pytest.fixture
+def get_tokens(create_user):
+    """Generate access and refresh tokens for the test user."""
+    user = create_user
+    refresh = RefreshToken.for_user(user)
+    return {
+        'access': str(refresh.access_token),
+        'refresh': str(refresh),
+    }
+
+
+@pytest.mark.django_db
+def test_jwt_access_token_authentication(create_user, get_tokens):
+    """Test JWT Access Token authentication."""
+    client = APIClient()
+    access_token = get_tokens['access']
+
+    # Add access token to the Authorization header
+    client.credentials(HTTP_AUTHORIZATION=f'Bearer {access_token}')
+
+    # Send a request to a protected endpoint
+    response = client.get('/protected-endpoint/')  # Replace with your endpoint
+
+    assert response.status_code == 200
+    assert response.json() == {"message": "Success"}
+
+
+@pytest.mark.django_db
+def test_jwt_refresh_token(create_user, get_tokens):
+    """Test JWT Refresh Token functionality."""
+    client = APIClient()
+    refresh_token = get_tokens['refresh']
+
+    # Refresh the access token using the refresh token
+    response = client.post('/api/token/refresh/', data={'refresh': refresh_token})
+
+    assert response.status_code == 200
+    assert 'access' in response.data
+
+
+@pytest.mark.django_db
+def test_invalid_access_token():
+    """Test authentication with an invalid access token."""
+    client = APIClient()
+    invalid_token = "invalid.jwt.token"
+
+    # Add invalid token to the Authorization header
+    client.credentials(HTTP_AUTHORIZATION=f'Bearer {invalid_token}')
+
+    # Send a request to a protected endpoint
+    response = client.get('/protected-endpoint/')  # Replace with your endpoint
+
+    assert response.status_code == 401
+    assert response.data['detail'] == 'Given token not valid for any token type'
+
+
+@pytest.mark.django_db
+def test_invalid_refresh_token():
+    """Test refreshing with an invalid refresh token."""
+    client = APIClient()
+    invalid_refresh_token = "invalid.refresh.token"
+
+    # Attempt to refresh the access token with an invalid refresh token
+    response = client.post('/api/token/refresh/', data={'refresh': invalid_refresh_token})
+
+    assert response.status_code == 401
+    assert response.data['detail'] == 'Token is invalid or expired'
+    
 
 class SampleTestCase(APITestCase):
     def test_example(self):
