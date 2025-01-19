@@ -1,9 +1,25 @@
 ## 백엔드 개발 온보딩 과제
 
+### 레포지토리 저장소 내려받기
+```zsh
+$ git clone https://github.com/7eerup/project.git
+```
+
+### 가상 환경 설정
+```zsh
+$ python -m venv .venv
+$ source .venv/bin/activate
+```
+
+### 패키지 설치
+```zsh
+$ pip install -r requirements.txt
+```
+
 ### 디렉터리 구조
 ```
 ├── django
-│   ├── project
+│   ├── deploy
 │       ├── blog
 │       ├── project
 │       ├── conftest.py
@@ -15,6 +31,7 @@
 │   # 백엔드 개발 온보딩 과제 (Python)
 ├── .gitignore
 ├── README.md   # 현재 문서
+├── requirements.txt    # 패키지 설치
 │
 │
 │   # 관리자 계정 생성
