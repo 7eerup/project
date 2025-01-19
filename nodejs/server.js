@@ -12,6 +12,11 @@ app.get('/', (req, res) => {
   res.send('Hello, World!');
 });
 
+// JSON 응답
+app.get('/api', (req, res) => {
+    res.json({ message: 'Hello, API!' });
+  });
+
 // 서버 시작
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
