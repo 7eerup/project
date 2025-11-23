@@ -15,17 +15,6 @@
       },
       {
         "condition": {
-          "monitor_resolution": "4K",
-          "main_use": "게이밍",
-          "budget_max": 2499999
-        },
-        "recommendation": {
-          "action": "예산 상향 권장",
-          "reason": "4K 게이밍은 최소 250만 원대 견적이 필요합니다. 현재 예산으론 적절한 GPU를 배치하기 어려움. QHD 모니터나 예산을 재고려할 것."
-        }
-      },
-      {
-        "condition": {
           "monitor_resolution": "QHD",
           "main_use": "게이밍",
           "budget_min": 1500000
@@ -33,17 +22,6 @@
         "recommendation": {
           "vram_min": "12GB",
           "examples": ["RTX 4060", "RX 7600", "RTX 4070", "RTX 4070 Ti", "RTX 5070", "RTX 5070 Ti"]
-        }
-      },
-      {
-        "condition": {
-          "monitor_resolution": "QHD",
-          "main_use": "게이밍",
-          "budget_max": 1499999
-        },
-        "recommendation": {
-          "action": "예산 상향 권장",
-          "reason": "QHD 게이밍은 최소 150만 원대 견적이 필요합니다. 현재 예산으론 적절한 GPU를 배치하기 어려움. FHD 모니터나 예산을 재고려할 것."
         }
       },
       {

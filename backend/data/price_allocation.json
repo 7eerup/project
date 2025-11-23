@@ -69,7 +69,21 @@
           "strategy": "용량만 맞추기. 브랜드보다는 가성비 중심. RAM은 일반 제품, SSD는 용량만 충분한 저가 제품.",
           "warning": "품질이 낮아지므로 A/S와 내구성을 확인할 것. 과도한 저가 선택은 자제."
         }
+      },
+    {
+      "condition": {
+        "monitor_resolution": "4K",
+        "main_use": "게이밍",
+        "budget_max_krw": 2499999
+      },
+      "recommendation": {
+        "action": "raise_budget",
+        "min_budget_krw": 2500000,
+        "user_message": "4K 해상도에서 게이밍을 원한다면, GPU/파워/전체 밸런스를 고려했을 때 최소 250만 원 이상의 예산이 필요합니다. 따라서 이 견적은 250만 원 기준으로 구성합니다."
       }
+    }
     ]
-  }
+
+}
+
   
