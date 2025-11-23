@@ -6,12 +6,14 @@ from typing import List
 from dataclasses import dataclass, asdict
 from openai import OpenAI
 from dotenv import load_dotenv
+
 load_dotenv()
 
-API_KEY = ""
+API_KEY = os.getenv("OPENAI_API_KEY")
+VECTOR_STORE_ID = os.getenv("VECTOR_STORE_ID")
+
 client = OpenAI(api_key=API_KEY)
 
-VECTOR_STORE_ID = ""
 app = Flask(__name__)
 CORS(app)
 
@@ -176,4 +178,4 @@ def build_quote():
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=8000, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
