@@ -1,3 +1,4 @@
+import os
 import json
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -5,7 +6,7 @@ from typing import List
 from dataclasses import dataclass, asdict
 from openai import OpenAI
 
-client = OpenAI(api_key="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")
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 app = Flask(__name__)
 CORS(app)
