@@ -199,7 +199,7 @@ async function startLoading() {
 
   try {
     // [진짜 모드 ON] 주석 해제!
-    const response = await axios.post('http://10.19.215.161:5000/build-quote', surveyData);
+    const response = await axios.post('http://3.37.36.58:5000/build-quote', surveyData);
     answers.value = response.data; // 서버 데이터로 덮어쓰기
     
     // [가짜 모드 OFF] 이 줄은 지우거나 주석 처리하세요
