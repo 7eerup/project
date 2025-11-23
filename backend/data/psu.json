@@ -1,0 +1,45 @@
+{
+    "category": "파워 선택 기준",
+    "rules": [
+      {
+        "condition": {
+          "note": "기본 원칙"
+        },
+        "recommendation": {
+          "wattage_formula": "(GPU TDP + CPU TDP + 150W) * 2",
+          "note": "총 소비전력의 2배를 감당할 수 있는 파워를 선택해야 여유 있게 사용 가능.",
+          "rationale": "과부하, 발열, 향후 업그레이드를 고려한 여유 용량이 중요. 2배는 안정성과 수명을 보장하는 경험적 기준."
+        }
+      },
+      {
+        "condition": {
+          "mainboard_chipset_tier": "상위 (예: Z790, X670)"
+        },
+        "recommendation": {
+          "additional_headroom_watt": 100,
+          "note": "메인보드 칩셋이 상위일수록 더 여유있게 선택. 고급 보드는 다중 GPU, 다수 저장장치를 지원하므로 파워 여유 필요.",
+          "rationale": "고급 보드는 확장 슬롯이 많아 나중에 부품 추가 시 파워가 부족하지 않게 미리 확보."
+        }
+      },
+      {
+        "condition": {
+          "gpu_tdp": "200W 이상"
+        },
+        "recommendation": {
+          "efficiency": "80 PLUS Gold 이상",
+          "note": "고성능 GPU는 전력 소모가 크므로 효율이 높은 파워를 권장.",
+          "rationale": "낮은 효율은 발열과 전기료 손실을 유발. Gold 이상은 안정성과 절전 모두 보장."
+        }
+      },
+      {
+        "condition": {
+          "budget_tier": "중급 이상"
+        },
+        "recommendation": {
+          "brand": "마이크로닉스, 시소닉, 코세어 등 대기업 제품 우선 추천",
+          "rationale": "대기업 제품은 품질, A/S, 안정성이 보장됨. 저가 제품은 과전류, 발화 위험이 있어 피해야 함."
+        }
+      }
+    ]
+  }
+  

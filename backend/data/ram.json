@@ -1,0 +1,59 @@
+{
+    "category": "RAM 선택 기준",
+    "rules": [
+      {
+        "condition": {
+          "note": "기본 요구사항"
+        },
+        "recommendation": {
+          "capacity_min_gb": 16,
+          "note": "모든 견적은 16GB 이상으로 시작해야 함. 8GB는 현재 기준으로 불충분.",
+          "channel": "멀티 채널 (듀얼/쿼드) 필수. 단일 채널 구매는 비효율적이므로 금지.",
+          "rationale": "멀티 채널은 메모리 대역폭을 높여 게이밍 및 작업 성능을 향상시킴."
+        }
+      },
+      {
+        "condition": {
+          "main_use": "스트리밍, 영상 편집, 고사양 작업 프로그램 사용"
+        },
+        "recommendation": {
+          "capacity_min_gb": 32,
+          "note": "영상 편집, 3D 렌더링, 대용량 프로그램 동시 실행 시 32GB 이상 권장.",
+          "rationale": "16GB는 프리미어 프로, 다빈치 리졸브 등에서 버벅임을 유발할 수 있음."
+        }
+      },
+      {
+        "condition": {
+          "main_use": "게이밍",
+          "budget_max": 2500000
+        },
+        "recommendation": {
+          "capacity_max_gb": 32,
+          "note": "게이밍 용도는 32GB까지만 추천. 64GB는 오버스펙.",
+          "rationale": "대부분의 게임은 16GB로도 충분하고, 32GB면 여유 있게 돌림. 64GB는 가격만 높이고 성능 향상 거의 없음."
+        }
+      },
+      {
+        "condition": {
+          "budget_min": 1500000,
+          "budget_max": 2500000,
+          "main_use": "게이밍 이외"
+        },
+        "recommendation": {
+          "capacity": "32GB",
+          "priority": "가능하면 튜닝된 램 (클럭 높은) 선택. 가격이 타이트하면 일반 램도 허용."
+        }
+      },
+      {
+        "condition": {
+          "budget_min": 2500000,
+          "main_use": "게이밍 이외"
+        },
+        "recommendation": {
+          "capacity": "64GB",
+          "note": "250만 원 이상이면 64GB를 선택할 수 있음. 영상 편집, 3D 작업에 유리.",
+          "priority": "튜닝된 램 우선. 가격 타이트하면 일반 램으로 용량만 맞추기."
+        }
+      }
+    ]
+  }
