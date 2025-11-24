@@ -34,8 +34,8 @@ quote_tag = Tag(name="PC Quote", description="PC 견적 생성 관련 API")
 @dataclass
 class PcRequest:
     budget: str               # 선택한 예산값 (그대로 문자열)
-    main_use: str             # 선택한 용도
-    fav_programs: List[str]   # , 기준으로 파싱된 프로그램/게임 리스트
+    mainUse: str             # 선택한 용도
+    favProgramOrGame: List[str]   # , 기준으로 파싱된 프로그램/게임 리스트
     design: str               # 선택한 디자인
     storage: str              # 선택한 용량
     windows: str              # 포함 여부 (문자열 그대로, 필요하면 나중에 bool로 가공)
@@ -47,8 +47,8 @@ def parse_request(payload: dict) -> PcRequest:
 
     return PcRequest(
         budget=str(payload.get("budget", "")),
-        main_use=str(payload.get("mainUse", "")),
-        fav_programs=fav_list,
+        mainUse=str(payload.get("mainUse", "")),
+        favProgramOrGame=fav_list,
         design=str(payload.get("design", "")),
         storage=str(payload.get("storage", "")),
         windows=str(payload.get("windows", "")),
@@ -56,14 +56,14 @@ def parse_request(payload: dict) -> PcRequest:
     )
 
 def build_prompt(req: PcRequest) -> str:
-    fav_list_str = ", ".join(req.fav_programs) if req.fav_programs else "없음"
+    fav_list_str = ", ".join(req.favProgramOrGame) if req.favProgramOrGame else "없음"
 
     return f"""
 너는 PC 견적 맞춤 도우미다.
 
 [사용자 입력]
 - 예산: {req.budget}
-- 주 사용 용도: {req.main_use}
+- 주 사용 용도: {req.mainUse}
 - 자주 사용하는 프로그램/게임: {fav_list_str}
 - 선호 디자인: {req.design}
 - SSD 용량 조건: {req.storage} 이상
@@ -171,8 +171,8 @@ def generate_quote(req: PcRequest) -> dict:
 class PcQuoteRequest(BaseModel):
     """요청 스키마 (문서화 전용)"""
     budget: str = Field(..., json_schema_extra={"example": "120만원 ~ 180만원"})
-    main_use: str = Field(..., json_schema_extra={"example": "게임"})
-    fav_programs: str = Field(default="", json_schema_extra={"example": "오버워치, 로스트아크"})
+    mainUse: str = Field(..., json_schema_extra={"example": "게임"})
+    favProgramOrGame: str = Field(default="", json_schema_extra={"example": "오버워치, 로스트아크"})
     design: str = Field(..., json_schema_extra={"example": "블랙 & 심플"})
     storage: str = Field(..., json_schema_extra={"example": "1TB"})
     windows: str = Field(..., json_schema_extra={"example": "포함"})
