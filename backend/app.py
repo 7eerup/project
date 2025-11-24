@@ -6,16 +6,30 @@ from typing import List
 from dataclasses import dataclass, asdict
 from openai import OpenAI
 from dotenv import load_dotenv
+from flask_openapi3 import OpenAPI, Info, Tag
+from pydantic import BaseModel, Field
 
 load_dotenv()
 
 API_KEY = os.getenv("OPENAI_API_KEY")
 VECTOR_STORE_ID = os.getenv("VECTOR_STORE_ID")
 
+info = Info(
+    title="Maknawa API",
+    version="1.0.0"
+)
+
+app = OpenAPI(__name__, info=info)
+CORS(app)
+
 client = OpenAI(api_key=API_KEY)
 
-app = Flask(__name__)
-CORS(app)
+quote_tag = Tag(name="PC Quote", description="PC 견적 생성 관련 API")
+
+# ------------------------------------------------------------
+# 함수 작성
+# ------------------------------------------------------------
+
 
 @dataclass
 class PcRequest:
@@ -40,12 +54,6 @@ def parse_request(payload: dict) -> PcRequest:
         windows=str(payload.get("windows", "")),
         monitor=str(payload.get("monitor", "")),
     )
-
-@app.route('/parse', methods=['POST'])
-def parse():
-    data = request.json
-    pc_request = parse_request(data)
-    return jsonify(asdict(pc_request))
 
 def build_prompt(req: PcRequest) -> str:
     fav_list_str = ", ".join(req.fav_programs) if req.fav_programs else "없음"
@@ -157,17 +165,38 @@ def generate_quote(req: PcRequest) -> dict:
     except json.JSONDecodeError:
         raise ValueError(f"LLM 응답이 유효한 JSON 형식이 아닙니다: {raw}")
 
-@app.route("/build-quote", methods=["POST"])
-def build_quote():
+# ------------------------------------------------------------
+# API, API 명세 작성 코드
+# ------------------------------------------------------------
+class PcQuoteRequest(BaseModel):
+    """요청 스키마 (문서화 전용)"""
+    budget: str = Field(..., json_schema_extra={"example": "120만원 ~ 180만원"})
+    main_use: str = Field(..., json_schema_extra={"example": "게임"})
+    fav_programs: str = Field(default="", json_schema_extra={"example": "오버워치, 로스트아크"})
+    design: str = Field(..., json_schema_extra={"example": "블랙 & 심플"})
+    storage: str = Field(..., json_schema_extra={"example": "1TB"})
+    windows: str = Field(..., json_schema_extra={"example": "포함"})
+    monitor: str = Field(..., json_schema_extra={"example": "QHD"})
+
+# @app.post('/parse', tags=[quote_tag], summary = "json 파싱")
+# def parse():
+#     """json 파싱 및 서비스 확장 대비 용"""
+#     data = request.json
+#     pc_request = parse_request(data)
+#     return jsonify(asdict(pc_request))
+
+@app.post('/build-quote', tags=[quote_tag], summary="PC 견적 생성")
+def build_quote(body: PcQuoteRequest):
+    """사용자 입력 + 컨텍스트 문서 기반 현 시점 추천할 수 있는 PC 견적 생성"""
     data = request.json
     req_obj = parse_request(data)
 
     try:
         quote_json = generate_quote(req_obj)
-        status = 200
+        status = 200 #성공
         body = quote_json
     except Exception as e:
-        status = 500
+        status = 500 #서버 오류
         body = {"error": str(e)}
 
     return app.response_class(
@@ -175,7 +204,6 @@ def build_quote():
         status=status,
         mimetype="application/json; charset=utf-8",
     )
-
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000, debug=True)
