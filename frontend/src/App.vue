@@ -44,7 +44,10 @@
     </div>
 
     <div v-else-if="showLoading" class="loading-card">
-      <div class="loader"></div>
+      <div class="loading-wrapper">
+        <div class="spinner-ring"></div>
+        <img :src="loadingLogo" class="center-logo" alt="Logo" />
+      </div>
       <p>견적 분석 중...</p>
       <p class="loading-sub">부품 간 호환성을 정밀하게 체크하고 있습니다...</p>
     </div>
@@ -97,6 +100,8 @@
 <script setup>
 import { reactive, ref, computed } from 'vue';
 import axios from 'axios'; 
+// ▼ 로고 이미지 Import (경로 확인해주세요!)
+import loadingLogo from '@/assets/logo.png';
 
 const steps = [
   {
@@ -200,6 +205,7 @@ async function startLoading() {
   try {
     const response = await axios.post('http://3.37.36.58:5000/build-quote', surveyData);
     answers.value = response.data; // 서버 데이터로 덮어쓰기
+    // await new Promise(resolve => setTimeout(resolve, 3000));
   } catch (error) {
     console.error("서버 연결 실패:", error);
   } finally {
@@ -216,7 +222,7 @@ function restartSurvey() {
 
 const selectedTab = ref('resale');
 
-// Mock Data
+// Mock Data (서버 에러 시 기본값이나 초기 렌더링용)
 const answers = ref({
   resale_set: {
     option: "중고가 방어형",
@@ -270,12 +276,10 @@ function getRecommendText(tab) {
   return "";
 }
 
-// [수정됨] 언어 순화 및 전문적인 표현으로 변경
 function getTooltipText(category) {
   const use = surveyData.mainUse || "";
   const monitor = surveyData.monitor || "";
   
-  // 1. CPU
   if (category.includes('CPU')) {
     if (use.includes('크리에이터') || use.includes('전문 작업')) {
       return "영상 편집과 렌더링은 '멀티코어' 성능이 핵심입니다. 코어 수가 넉넉한 고성능 프로세서를 우선했습니다.";
@@ -285,8 +289,6 @@ function getTooltipText(category) {
     }
     return "사무용 작업에 최적화된, 가성비와 안정성이 검증된 프로세서입니다.";
   }
-
-  // 2. RAM
   if (category.includes('RAM')) {
     if (use.includes('크리에이터') || use.includes('전문 작업')) {
       return "프리미어 프로, 3D 렌더링 시 16GB는 부족할 수 있습니다. 쾌적한 작업을 위해 32GB 이상을 권장합니다.";
@@ -296,8 +298,6 @@ function getTooltipText(category) {
     }
     return "웹서핑과 사무 작업에는 16GB로도 매우 충분합니다. 쾌적한 멀티태스킹이 가능합니다.";
   }
-
-  // 3. 그래픽카드
   if (category.includes('그래픽')) {
     if (monitor === '4K') {
       return "4K 해상도에서는 VRAM(비디오 메모리) 용량이 성능에 가장 큰 영향을 미칩니다. 고사양 모델이 필수적입니다.";
@@ -310,28 +310,21 @@ function getTooltipText(category) {
     }
     return "게임 프레임 유지를 위한 핵심 부품입니다. 예산 내에서 가장 성능이 좋은 칩셋을 선택했습니다.";
   }
-
-  // 4. 파워
   if (category.includes('파워')) {
     if (use.includes('고사양 게임') || use.includes('전문 작업')) {
       return "안정적인 전력 공급을 위해 시스템 총 소모 전력보다 여유 있는 용량으로 구성했습니다.";
     }
     return "시스템 안정성의 핵심입니다. 정격 출력이 보장되지 않는 비정격 제품(일명 뻥파워)은 절대 추천하지 않습니다.";
   }
-
-  // 5. 메인보드
   if (category.includes('메인보드')) {
     if (selectedTab.value === 'upgrade') {
       return "추후 업그레이드를 고려하여 전원부 구성이 충실하고, 확장성이 뛰어난 모델입니다.";
     }
     return "CPU와의 호환성 및 가성비가 검증된 메인보드 칩셋을 선택했습니다.";
   }
-
-  // 6. 케이스
   if (category.includes('케이스')) {
     return "그래픽카드 장착 가능 길이와 메인보드 규격 호환성을 꼼꼼히 체크했습니다. 통기성도 고려되었습니다.";
   }
-
   return null;
 }
 
@@ -365,9 +358,38 @@ body { background: #f9fafb; color: #333; -webkit-font-smoothing: antialiased; }
 .next-btn { background: #4872f2; color: #fff; box-shadow: 0 2px 8px #4872f244; }
 .next-btn:disabled { background: #c6ccdd; cursor: not-allowed; box-shadow: none; }
 .prev-btn { background: #eef1fa; color: #5a6b8c; }
-.loading-card .loader { border: 6px solid #f3f3f3; border-top: 6px solid #4872f2; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 16px; }
-.loading-sub { font-size: 0.9rem; color: #888; margin-top: 8px; }
+
+/* ▼▼▼ 로딩 애니메이션 스타일 (수정됨) ▼▼▼ */
+.loading-wrapper {
+  position: relative;
+  width: 90px;
+  height: 90px;
+  margin: 0 auto 20px;
+}
+.spinner-ring {
+  box-sizing: border-box; /* 테두리 포함 크기 계산 */
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #4872f2;
+  animation: spin 1.2s linear infinite;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.center-logo {
+  width: 50%; /* 로고 크기는 원의 50% 정도 */
+  height: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* 정확히 정중앙 정렬 */
+}
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+/* ▲▲▲ 로딩 애니메이션 끝 ▲▲▲ */
+
+.loading-sub { font-size: 0.9rem; color: #888; margin-top: 8px; }
 .tabs { display: flex; gap: 5px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center;}
 .tabs button { flex: 1; background: #f1f3f7; border: none; border-radius: 8px; padding: 10px; font-size: 0.95rem; color: #555; cursor: pointer; white-space: nowrap; font-weight: 600; }
 .tabs button.active { background: #4872f2; color: #fff; font-weight: 700; }
@@ -388,4 +410,4 @@ body { background: #f9fafb; color: #333; -webkit-font-smoothing: antialiased; }
 .tooltip-icon .tooltip-text { visibility: hidden; width: 220px; background-color: #333; color: #fff; text-align: left; border-radius: 6px; padding: 10px; position: absolute; z-index: 1; bottom: 125%; left: 50%; margin-left: -110px; opacity: 0; transition: opacity 0.3s; font-weight: 400; font-size: 0.85rem; line-height: 1.4; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
 .tooltip-icon:hover .tooltip-text { visibility: visible; opacity: 1; }
 .tooltip-icon .tooltip-text::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -5px; border-width: 5px; border-style: solid; border-color: #333 transparent transparent transparent; }
-</style> 
+</style>
