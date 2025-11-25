@@ -1,5 +1,9 @@
 <template>
   <div class="container">
+    <div class="warning-banner">
+      ⚠️ 선택하신 예산 내에서 최적의 성능을 구성하기 위해, 일부 부품 등급이 조정될 수 있습니다. (예: 80만원 예산으로 4K 게이밍 구성 시)
+    </div>
+
     <div v-if="step < steps.length">
       <div class="progress-bar">
         <div class="progress" :style="{ width: ((step + 1) / steps.length) * 100 + '%' }"></div>
@@ -42,13 +46,14 @@
     <div v-else-if="showLoading" class="loading-card">
       <div class="loader"></div>
       <p>견적 분석 중...</p>
+      <p class="loading-sub">부품 간 호환성을 정밀하게 체크하고 있습니다...</p>
     </div>
 
     <div v-else class="result-card">
       <div class="tabs">
         <button :class="{active: selectedTab === 'resale'}" @click="selectedTab = 'resale'">💰 중고가 방어</button>
         <button :class="{active: selectedTab === 'upgrade'}" @click="selectedTab = 'upgrade'">🛠️ 업그레이드</button>
-        <button :class="{active: selectedTab === 'performance'}" @click="selectedTab = 'performance'">🚀 가성비/특가</button>
+        <button :class="{active: selectedTab === 'performance'}" @click="selectedTab = 'performance'">🚀 퍼포먼스</button>
       </div>
 
       <div class="estimate-wrapper" v-if="currentEstimate">
@@ -59,7 +64,13 @@
           </div>
           <table class="parts-table">
             <tr v-for="(part, i) in currentEstimate.parts" :key="i">
-              <td class="cat">{{ part.category }}</td>
+              <td class="cat">
+                {{ part.category }}
+                <span class="tooltip-icon" v-if="getTooltipText(part.category)">
+                  ?
+                  <span class="tooltip-text">{{ getTooltipText(part.category) }}</span>
+                </span>
+              </td>
               <td>{{ part.name }}</td>
             </tr>
           </table>
@@ -141,25 +152,14 @@ const steps = [
     ]
   },
   {
-    title: 'Q6. 윈도우(운영체제) 포함 여부를 선택해주세요.',
-    subtitle: '(정품 포함 시 약 15~20만원 추가)',
-    key: 'windows',
-    inputType: 'select',
-    options: [
-      { label: '포함: 설치 후 배송 (바로 사용)', value: '포함' },
-      { label: '미포함: 직접 설치 가능', value: '미포함' }
-    ]
-  },
-  {
-    title: 'Q7. 사용하실 모니터의 해상도는 무엇인가요?',
-    subtitle: '(모니터 사양에 따라 부품이 달라져요!)',
+    title: 'Q6. 사용하실 모니터의 해상도는 무엇인가요?',
+    subtitle: '(주 사용프로그램에서 최대로 사용할 해상도를 알려주세요)',
     key: 'monitor',
     inputType: 'select',
     options: [
       { label: 'FHD (1920x1080): 일반 모니터', value: 'FHD' },
       { label: 'QHD (2560x1440): 고화질 게이밍', value: 'QHD' },
       { label: '4K (3840x2160): 전문가/TV', value: '4K' },
-      { label: '모니터도 포함 견적 요청', value: '포함' }
     ]
   },
 ];
@@ -171,7 +171,7 @@ function getOptionValue(option) {
 
 const surveyData = reactive({
   budget: '', mainUse: '', favProgramOrGame: '', design: '',
-  storage: '', windows: '', monitor: ''
+  storage: '', monitor: ''
 });
 
 const step = ref(0);
@@ -198,16 +198,10 @@ async function startLoading() {
   showLoading.value = true; 
 
   try {
-    // [진짜 모드 ON] 주석 해제!
     const response = await axios.post('http://3.37.36.58:5000/build-quote', surveyData);
     answers.value = response.data; // 서버 데이터로 덮어쓰기
-    
-    // [가짜 모드 OFF] 이 줄은 지우거나 주석 처리하세요
-    // await new Promise(resolve => setTimeout(resolve, 3000)); 
-
   } catch (error) {
     console.error("서버 연결 실패:", error);
-    alert("서버 연결 실패! 백엔드가 켜져 있나요?");
   } finally {
     showLoading.value = false;
   }
@@ -222,19 +216,123 @@ function restartSurvey() {
 
 const selectedTab = ref('resale');
 
-// Mock Data (ref로 감싸져 있는지 확인)
-const answers = ref({"resale_set": {"option": "중고가 방어형", "price": "약 140만원", "parts": [{"category": "CPU", "name": "인텔 i7-12700F (중고)"}, {"category": "메인보드", "name": "ASUS TUF GAMING B660M-PLUS WIFI D4"}, {"category": "RAM", "name": "삼성 DDR4 16GB (2x8GB) 3200MHz"}, {"category": "그래픽카드", "name": "이엠텍 RTX 3060 Ti (중고)"}, {"category": "SSD", "name": "마이크론 P3 2TB NVMe"}, {"category": "파워", "name": "시소닉 S12III 650W 80PLUS Bronze"}, {"category": "케이스", "name": "갤럭시 GALAX EX Black RGB"}]}, "upgrade_set": {"option": "업그레이드형", "price": "약 175만원", "parts": [{"category": "CPU", "name": "AMD 라이젠 7 7700X"}, {"category": "메인보드", "name": "MSI MPG B650 TOMAHAWK WIFI"}, {"category": "RAM", "name": "삼성 DDR5 32GB (2x16GB) 5200MHz"}, {"category": "그래픽카드", "name": "MSI RTX 4070 VENTUS 2X"}, {"category": "SSD", "name": "삼성 980 PRO 2TB NVMe"}, {"category": "파워", "name": "시소닉 FOCUS GX-750 80PLUS Gold"}, {"category": "케이스", "name": "Lian Li PC-O11 Dynamic EVO RGB"}]}, "performance_set": {"option": "가성비/특가형", "price": "약 125만원", "parts": [{"category": "CPU", "name": "AMD 라이젠 5 7600"}, {"category": "메인보드", "name": "ASRock B650M PG Riptide"}, {"category": "RAM", "name": "마이크론 DDR5 16GB (2x8GB) 4800MHz"}, {"category": "그래픽카드", "name": "COLORFUL RTX 4060 NB 8GB"}, {"category": "SSD", "name": "SK하이닉스 Platinum P41 2TB NVMe"}, {"category": "파워", "name": "마이크로닉스 Classic II 700W 80PLUS Bronze"}, {"category": "케이스", "name": "앱코 SUITMASTER P150 RGB 강화유리"}]}}
-);
+// Mock Data
+const answers = ref({
+  resale_set: {
+    option: "중고가 방어형",
+    parts: [
+      { category: "CPU", name: "인텔 i5-13400F" },
+      { category: "메인보드", name: "ASUS PRIME B760M-A" },
+      { category: "RAM", name: "삼성 DDR4 16GB (8GBx2)" },
+      { category: "그래픽카드", name: "이엠텍 지포스 RTX 4060" },
+      { category: "SSD", name: "삼성 980 1TB" },
+      { category: "파워", name: "마이크로닉스 600W" },
+      { category: "케이스", name: "앱코 NCORE 베놈" }
+    ],
+    price: "약 120만원"
+  },
+  upgrade_set: {
+    option: "업그레이드형",
+    parts: [
+      { category: "CPU", name: "AMD 라이젠5 7500F" },
+      { category: "메인보드", name: "MSI PRO B650M-A" },
+      { category: "RAM", name: "삼성 DDR5 32GB" },
+      { category: "그래픽카드", name: "MSI RTX 4060 Ti" },
+      { category: "SSD", "name": "SK하이닉스 P31 1TB" },
+      { category: "파워", name: "시소닉 850W" },
+      { category: "케이스", name: "darkFlash DLX21" }
+    ],
+    price: "약 155만원"
+  },
+  performance_set: {
+    option: "가성비/특가형",
+    parts: [
+      { category: "CPU", name: "인텔 i5-12400F" },
+      { category: "메인보드", name: "ASRock B660M" },
+      { category: "RAM", name: "DDR4 16GB" },
+      { category: "그래픽카드", name: "COLORFUL RTX 4060" },
+      { category: "SSD", name: "마이크론 1TB" },
+      { category: "파워", name: "잘만 600W" },
+      { category: "케이스", name: "DAVEN D6" }
+    ],
+    price: "약 108만원"
+  }
+});
 
 const currentEstimate = computed(() => {
   return answers.value[selectedTab.value + '_set'];
 });
 
 function getRecommendText(tab) {
-  if(tab === 'resale') return "PC 시장에서 가장 인기 있는 부품들입니다. 나중에 중고로 팔 때 가격 방어가 잘 됩니다!";
-  if(tab === 'upgrade') return "파워와 메인보드를 빵빵하게 넣었습니다. 3년 뒤에 그래픽카드만 바꿔도 현역입니다.";
-  if(tab === 'performance') return "브랜드 거품을 빼고 성능에 몰빵했습니다. 같은 돈으로 게임 프레임이 제일 잘 나옵니다.";
+  if(tab === 'resale') return "가장 범용적이고, 호환성이 좋은 부품들로 구성했습니다. 추후 중고 거래 시에도 유리합니다.";
+  if(tab === 'upgrade') return "향후 부품 교체를 고려하여, 확장성과 호환성이 뛰어난 부품 위주로 선택했습니다.";
+  if(tab === 'performance') return "브랜드 인지도보다는 실제 성능에 집중했습니다. 현 시점에서 가격 대비 성능이 가장 뛰어납니다.";
   return "";
+}
+
+// [수정됨] 언어 순화 및 전문적인 표현으로 변경
+function getTooltipText(category) {
+  const use = surveyData.mainUse || "";
+  const monitor = surveyData.monitor || "";
+  
+  // 1. CPU
+  if (category.includes('CPU')) {
+    if (use.includes('크리에이터') || use.includes('전문 작업')) {
+      return "영상 편집과 렌더링은 '멀티코어' 성능이 핵심입니다. 코어 수가 넉넉한 고성능 프로세서를 우선했습니다.";
+    }
+    if (use.includes('고사양 게임') || use.includes('캐주얼 게임')) {
+      return "게임 성능은 '단일 코어 클럭'이 결정적인 요소입니다. 그래픽카드 성능을 온전히 끌어낼 수 있는 모델을 선택했습니다.";
+    }
+    return "사무용 작업에 최적화된, 가성비와 안정성이 검증된 프로세서입니다.";
+  }
+
+  // 2. RAM
+  if (category.includes('RAM')) {
+    if (use.includes('크리에이터') || use.includes('전문 작업')) {
+      return "프리미어 프로, 3D 렌더링 시 16GB는 부족할 수 있습니다. 쾌적한 작업을 위해 32GB 이상을 권장합니다.";
+    }
+    if (use.includes('고사양 게임')) {
+      return "대부분의 고사양 게임은 16GB로 충분하지만, 32GB는 더 여유롭습니다. 성능 향상을 위해 '듀얼 채널'로 구성했습니다.";
+    }
+    return "웹서핑과 사무 작업에는 16GB로도 매우 충분합니다. 쾌적한 멀티태스킹이 가능합니다.";
+  }
+
+  // 3. 그래픽카드
+  if (category.includes('그래픽')) {
+    if (monitor === '4K') {
+      return "4K 해상도에서는 VRAM(비디오 메모리) 용량이 성능에 가장 큰 영향을 미칩니다. 고사양 모델이 필수적입니다.";
+    }
+    if (use.includes('전문 작업') || use.includes('크리에이터')) {
+      return "작업 효율을 위해 CUDA 가속 기능이 우수한 NVIDIA 계열 그래픽카드를 추천합니다.";
+    }
+    if (use.includes('사무')) {
+      return "사무용으로는 내장 그래픽이나 기본형 카드로 충분합니다. 불필요한 전력 소모를 줄였습니다.";
+    }
+    return "게임 프레임 유지를 위한 핵심 부품입니다. 예산 내에서 가장 성능이 좋은 칩셋을 선택했습니다.";
+  }
+
+  // 4. 파워
+  if (category.includes('파워')) {
+    if (use.includes('고사양 게임') || use.includes('전문 작업')) {
+      return "안정적인 전력 공급을 위해 시스템 총 소모 전력보다 여유 있는 용량으로 구성했습니다.";
+    }
+    return "시스템 안정성의 핵심입니다. 정격 출력이 보장되지 않는 비정격 제품(일명 뻥파워)은 절대 추천하지 않습니다.";
+  }
+
+  // 5. 메인보드
+  if (category.includes('메인보드')) {
+    if (selectedTab.value === 'upgrade') {
+      return "추후 업그레이드를 고려하여 전원부 구성이 충실하고, 확장성이 뛰어난 모델입니다.";
+    }
+    return "CPU와의 호환성 및 가성비가 검증된 메인보드 칩셋을 선택했습니다.";
+  }
+
+  // 6. 케이스
+  if (category.includes('케이스')) {
+    return "그래픽카드 장착 가능 길이와 메인보드 규격 호환성을 꼼꼼히 체크했습니다. 통기성도 고려되었습니다.";
+  }
+
+  return null;
 }
 
 const userSummary = computed(() => [
@@ -248,6 +346,7 @@ const userSummary = computed(() => [
 <style>
 body { background: #f9fafb; color: #333; -webkit-font-smoothing: antialiased; }
 .container { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: #f9fafb; padding: 24px; }
+.warning-banner { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; padding: 12px 20px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem; font-weight: 600; text-align: center; width: 100%; max-width: 420px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
 .progress-bar { width: 100%; max-width: 360px; height: 6px; background: #e9ecef; border-radius: 3px; margin: 0 auto 16px; overflow: hidden; }
 .progress { background: #4872f2; height: 100%; transition: width 0.4s; }
 .question-card, .loading-card, .result-card { background: #fff; border-radius: 16px; padding: 32px 28px 24px 28px; width: 100%; max-width: 420px; box-shadow: 0 6px 20px 0 #a1afc933; margin: 20px 0; text-align: center; }
@@ -267,6 +366,7 @@ body { background: #f9fafb; color: #333; -webkit-font-smoothing: antialiased; }
 .next-btn:disabled { background: #c6ccdd; cursor: not-allowed; box-shadow: none; }
 .prev-btn { background: #eef1fa; color: #5a6b8c; }
 .loading-card .loader { border: 6px solid #f3f3f3; border-top: 6px solid #4872f2; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 16px; }
+.loading-sub { font-size: 0.9rem; color: #888; margin-top: 8px; }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 .tabs { display: flex; gap: 5px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center;}
 .tabs button { flex: 1; background: #f1f3f7; border: none; border-radius: 8px; padding: 10px; font-size: 0.95rem; color: #555; cursor: pointer; white-space: nowrap; font-weight: 600; }
@@ -276,11 +376,16 @@ body { background: #f9fafb; color: #333; -webkit-font-smoothing: antialiased; }
 .recommend { background: #eef4fc; padding: 12px; border-radius: 8px; font-size: 0.95rem; color: #2a4365; margin-bottom: 16px; line-height: 1.5; font-weight: 600; border: 1px solid #d1deed; }
 .parts-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
 .parts-table td { padding: 8px 0; border-bottom: 1px solid #e2e8f0; color: #2d3748; }
-.parts-table td.cat { font-weight: 700; color: #4872f2; width: 90px; vertical-align: top; }
+.parts-table td.cat { font-weight: 700; color: #4872f2; width: 110px; vertical-align: top; position: relative; }
 .price { text-align: right; font-weight: 800; font-size: 1.3rem; color: #2b6cb0; margin-top: 16px; }
 .summary { background: #f7fafc; border: 1px solid #edf2f7; border-radius: 8px; padding: 16px; margin-top: 24px; text-align: left; font-size: 0.95rem; color: #2d3748; }
 .summary h3 { margin-bottom: 10px; color: #1a202c; }
 .summary li { margin-bottom: 4px; line-height: 1.4; }
 .restart-btn { margin-top: 24px; background: #fff; border: 1px solid #cbd5e0; padding: 10px 20px; border-radius: 6px; cursor: pointer; color: #4a5568; font-weight: 600; }
 .restart-btn:hover { background: #f7fafc; }
-</style>
+.tooltip-icon { display: inline-block; width: 18px; height: 18px; line-height: 18px; background: #ccc; color: #fff; border-radius: 50%; text-align: center; font-size: 0.8rem; font-weight: bold; margin-left: 4px; cursor: help; }
+.tooltip-icon:hover { background: #4872f2; }
+.tooltip-icon .tooltip-text { visibility: hidden; width: 220px; background-color: #333; color: #fff; text-align: left; border-radius: 6px; padding: 10px; position: absolute; z-index: 1; bottom: 125%; left: 50%; margin-left: -110px; opacity: 0; transition: opacity 0.3s; font-weight: 400; font-size: 0.85rem; line-height: 1.4; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+.tooltip-icon:hover .tooltip-text { visibility: visible; opacity: 1; }
+.tooltip-icon .tooltip-text::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -5px; border-width: 5px; border-style: solid; border-color: #333 transparent transparent transparent; }
+</style> 
