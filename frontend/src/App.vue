@@ -29,7 +29,7 @@
         </div>
 
         <div v-if="step === 0" class="warning-banner">
-          ⚠️ 선택하신 예산 내에서 최적의 성능을 구성하기 위해,<br>
+          ⚠️ 선택하신 예산 내에서 최적의 성능을 구성하기 위해,
           일부 부품 등급이 조정될 수 있습니다.<br>
           <span class="sub-text">(예: 80만원 예산으로 4K 게이밍 구성 시)</span>
         </div>
@@ -344,7 +344,7 @@ const userSummary = computed(() => [
 body { background: #f9fafb; color: #333; -webkit-font-smoothing: antialiased; }
 .container { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: #f9fafb; padding: 24px; }
 
-.top-logo { width: 80px; height: auto; margin-bottom: 24px; }
+.top-logo { width: 200px; height: auto; margin-bottom: 24px; }
 
 /* 배너 스타일 수정: 줄바꿈 후 텍스트 정렬을 위해 line-height 추가 */
 .warning-banner { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; padding: 12px 20px; border-radius: 8px; margin-bottom: 20px; margin-top: 16px; font-size: 0.9rem; font-weight: 600; text-align: center; width: 100%; box-shadow: 0 2px 5px rgba(0,0,0,0.05); box-sizing: border-box; line-height: 1.6; }
@@ -353,7 +353,7 @@ body { background: #f9fafb; color: #333; -webkit-font-smoothing: antialiased; }
 
 .progress-bar { width: 100%; max-width: 360px; height: 6px; background: #e9ecef; border-radius: 3px; margin: 0 auto 16px; overflow: hidden; }
 .progress { background: #4872f2; height: 100%; transition: width 0.4s; }
-.question-card, .loading-card, .result-card { background: #fff; border-radius: 16px; padding: 32px 28px 24px 28px; width: 100%; max-width: 420px; box-shadow: 0 6px 20px 0 #a1afc933; margin: 20px 0; text-align: center; box-sizing: border-box; }
+.question-card, .loading-card, .result-card { background: #fff; border-radius: 16px; padding: 32px 28px 24px 28px; width: 100%; max-width: 640px; box-shadow: 0 6px 20px 0 #a1afc933; margin: 20px 0; text-align: center; box-sizing: border-box; }
 .question-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 8px; color: #111; }
 .question-subtitle { color: #666; font-size: 0.95rem; margin-bottom: 20px; font-weight: 500; }
 .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
@@ -372,7 +372,7 @@ body { background: #f9fafb; color: #333; -webkit-font-smoothing: antialiased; }
 
 .loading-wrapper { position: relative; width: 90px; height: 90px; margin: 0 auto 20px; }
 .spinner-ring { box-sizing: border-box; width: 100%; height: 100%; border-radius: 50%; border: 4px solid #f3f3f3; border-top: 4px solid #4872f2; animation: spin 1.2s linear infinite; position: absolute; top: 0; left: 0; }
-.center-logo { width: 50%; height: auto; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+.center-logo { width:70%; height: auto; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
 .loading-sub { font-size: 0.9rem; color: #888; margin-top: 8px; }
