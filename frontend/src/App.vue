@@ -1,8 +1,6 @@
 <template>
   <div class="container">
-    <div class="warning-banner">
-      ⚠️ 선택하신 예산 내에서 최적의 성능을 구성하기 위해, 일부 부품 등급이 조정될 수 있습니다. (예: 80만원 예산으로 4K 게이밍 구성 시)
-    </div>
+    <img :src="loadingLogo" class="top-logo" alt="서비스 로고" />
 
     <div v-if="step < steps.length">
       <div class="progress-bar">
@@ -28,6 +26,12 @@
               </div>
             </label>
           </template>
+        </div>
+
+        <div v-if="step === 0" class="warning-banner">
+          ⚠️ 선택하신 예산 내에서 최적의 성능을 구성하기 위해,<br>
+          일부 부품 등급이 조정될 수 있습니다.<br>
+          <span class="sub-text">(예: 80만원 예산으로 4K 게이밍 구성 시)</span>
         </div>
 
         <div v-if="steps[step].inputType === 'text'" class="open-input">
@@ -100,8 +104,7 @@
 <script setup>
 import { reactive, ref, computed } from 'vue';
 import axios from 'axios'; 
-// ▼ 로고 이미지 Import (경로 확인해주세요!)
-import loadingLogo from '@/assets/logo.png';
+import loadingLogo from '@/assets/logo.png'; 
 
 const steps = [
   {
@@ -204,8 +207,7 @@ async function startLoading() {
 
   try {
     const response = await axios.post('http://3.37.36.58:5000/build-quote', surveyData);
-    answers.value = response.data; // 서버 데이터로 덮어쓰기
-    // await new Promise(resolve => setTimeout(resolve, 3000));
+    answers.value = response.data;
   } catch (error) {
     console.error("서버 연결 실패:", error);
   } finally {
@@ -222,7 +224,7 @@ function restartSurvey() {
 
 const selectedTab = ref('resale');
 
-// Mock Data (서버 에러 시 기본값이나 초기 렌더링용)
+// Mock Data
 const answers = ref({
   resale_set: {
     option: "중고가 방어형",
@@ -339,10 +341,17 @@ const userSummary = computed(() => [
 <style>
 body { background: #f9fafb; color: #333; -webkit-font-smoothing: antialiased; }
 .container { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: #f9fafb; padding: 24px; }
-.warning-banner { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; padding: 12px 20px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem; font-weight: 600; text-align: center; width: 100%; max-width: 420px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+
+.top-logo { width: 80px; height: auto; margin-bottom: 24px; }
+
+/* 배너 스타일 수정: 줄바꿈 후 텍스트 정렬을 위해 line-height 추가 */
+.warning-banner { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; padding: 12px 20px; border-radius: 8px; margin-bottom: 20px; margin-top: 16px; font-size: 0.9rem; font-weight: 600; text-align: center; width: 100%; box-shadow: 0 2px 5px rgba(0,0,0,0.05); box-sizing: border-box; line-height: 1.6; }
+/* 예시 문구(3번째 줄)만 폰트 무게를 살짝 줄여서 가독성 높임 */
+.warning-banner .sub-text { font-weight: 400; font-size: 0.85rem; color: #856404; }
+
 .progress-bar { width: 100%; max-width: 360px; height: 6px; background: #e9ecef; border-radius: 3px; margin: 0 auto 16px; overflow: hidden; }
 .progress { background: #4872f2; height: 100%; transition: width 0.4s; }
-.question-card, .loading-card, .result-card { background: #fff; border-radius: 16px; padding: 32px 28px 24px 28px; width: 100%; max-width: 420px; box-shadow: 0 6px 20px 0 #a1afc933; margin: 20px 0; text-align: center; }
+.question-card, .loading-card, .result-card { background: #fff; border-radius: 16px; padding: 32px 28px 24px 28px; width: 100%; max-width: 420px; box-shadow: 0 6px 20px 0 #a1afc933; margin: 20px 0; text-align: center; box-sizing: border-box; }
 .question-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 8px; color: #111; }
 .question-subtitle { color: #666; font-size: 0.95rem; margin-bottom: 20px; font-weight: 500; }
 .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
@@ -359,35 +368,10 @@ body { background: #f9fafb; color: #333; -webkit-font-smoothing: antialiased; }
 .next-btn:disabled { background: #c6ccdd; cursor: not-allowed; box-shadow: none; }
 .prev-btn { background: #eef1fa; color: #5a6b8c; }
 
-/* ▼▼▼ 로딩 애니메이션 스타일 (수정됨) ▼▼▼ */
-.loading-wrapper {
-  position: relative;
-  width: 90px;
-  height: 90px;
-  margin: 0 auto 20px;
-}
-.spinner-ring {
-  box-sizing: border-box; /* 테두리 포함 크기 계산 */
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #4872f2;
-  animation: spin 1.2s linear infinite;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-.center-logo {
-  width: 50%; /* 로고 크기는 원의 50% 정도 */
-  height: auto;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%); /* 정확히 정중앙 정렬 */
-}
+.loading-wrapper { position: relative; width: 90px; height: 90px; margin: 0 auto 20px; }
+.spinner-ring { box-sizing: border-box; width: 100%; height: 100%; border-radius: 50%; border: 4px solid #f3f3f3; border-top: 4px solid #4872f2; animation: spin 1.2s linear infinite; position: absolute; top: 0; left: 0; }
+.center-logo { width: 50%; height: auto; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-/* ▲▲▲ 로딩 애니메이션 끝 ▲▲▲ */
 
 .loading-sub { font-size: 0.9rem; color: #888; margin-top: 8px; }
 .tabs { display: flex; gap: 5px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center;}
@@ -405,9 +389,19 @@ body { background: #f9fafb; color: #333; -webkit-font-smoothing: antialiased; }
 .summary li { margin-bottom: 4px; line-height: 1.4; }
 .restart-btn { margin-top: 24px; background: #fff; border: 1px solid #cbd5e0; padding: 10px 20px; border-radius: 6px; cursor: pointer; color: #4a5568; font-weight: 600; }
 .restart-btn:hover { background: #f7fafc; }
-.tooltip-icon { display: inline-block; width: 18px; height: 18px; line-height: 18px; background: #ccc; color: #fff; border-radius: 50%; text-align: center; font-size: 0.8rem; font-weight: bold; margin-left: 4px; cursor: help; }
+.tooltip-icon { display: inline-block; width: 18px; height: 18px; line-height: 18px; background: #ccc; color: #fff; border-radius: 50%; text-align: center; font-size: 0.8rem; font-weight: bold; margin-left: 4px; cursor: help; position: relative; }
 .tooltip-icon:hover { background: #4872f2; }
 .tooltip-icon .tooltip-text { visibility: hidden; width: 220px; background-color: #333; color: #fff; text-align: left; border-radius: 6px; padding: 10px; position: absolute; z-index: 1; bottom: 125%; left: 50%; margin-left: -110px; opacity: 0; transition: opacity 0.3s; font-weight: 400; font-size: 0.85rem; line-height: 1.4; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
 .tooltip-icon:hover .tooltip-text { visibility: visible; opacity: 1; }
 .tooltip-icon .tooltip-text::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -5px; border-width: 5px; border-style: solid; border-color: #333 transparent transparent transparent; }
+
+@media (max-width: 480px) {
+  .container { padding: 16px; }
+  .question-card, .loading-card, .result-card { padding: 24px 20px; }
+  .question-title { font-size: 1.2rem; }
+  .option-label { padding: 12px; font-size: 0.95rem; }
+  .warning-banner { font-size: 0.85rem; padding: 10px 16px; }
+  .parts-table td.cat { width: 90px; font-size: 0.9rem; }
+  .tooltip-icon .tooltip-text { width: 180px; margin-left: -90px; }
+}
 </style>
