@@ -206,8 +206,10 @@ async function startLoading() {
   showLoading.value = true; 
 
   try {
-    const response = await axios.post('http://3.37.36.58:5000/build-quote', surveyData);
-    answers.value = response.data;
+    const API = import.meta.env.VITE_API_URL;
+    const response = await axios.post(`${API}/build-quote`, surveyData);
+    answers.value = response.data; // 서버 데이터로 덮어쓰기
+    // await new Promise(resolve => setTimeout(resolve, 3000));
   } catch (error) {
     console.error("서버 연결 실패:", error);
   } finally {
