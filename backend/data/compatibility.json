@@ -1,0 +1,58 @@
+{
+    "category": "부품 호환성 기준",
+    "rules": [
+      {
+        "target": "GPU → CPU/메인보드",
+        "condition": {
+          "gpu_pcie_version": "4.0"
+        },
+        "recommendation": {
+          "note": "PCIe 4.0 GPU를 선택할 경우, CPU와 메인보드도 PCIe 4.0을 지원하는 것이 합리적임.",
+          "cpu_requirement": "Intel 11세대 이상, AMD 라이젠 3000 시리즈 이상",
+          "mainboard_requirement": "B550, X570, B660, Z690 등 PCIe 4.0 지원 칩셋",
+          "rationale": "GPU 성능을 최대로 끌어내기 위해선 PCIe 버전이 일치하는 것이 좋음. 다만 PCIe는 하위호환되므로 PCIe 3.0보드에서도 동작은 하지만, 성능 손실이 있을 수 있음."
+        }
+      },
+      {
+        "target": "RAM → CPU/메인보드",
+        "condition": {
+          "ram_type": "DDR5"
+        },
+        "recommendation": {
+          "note": "DDR5 메모리를 사용하려면 CPU와 메인보드가 DDR5를 지원해야 함.",
+          "cpu_requirement": "Intel 12세대 이상, AMD 라이젠 7000 시리즈 이상",
+          "mainboard_requirement": "B650, X670, Z690 등 DDR5 지원 보드",
+          "warning": "DDR5는 DDR4 슬롯에 꽂을 수 없음. 보드와 메모리 타입을 반드시 일치시켜야 함."
+        }
+      },
+      {
+        "target": "파워 → GPU/CPU",
+        "condition": {
+          "gpu_tdp": "200W 이상"
+        },
+        "recommendation": {
+          "note": "고성능 GPU는 전력 소모가 크므로, 충분한 출력과 80 PLUS 인증 파워를 권장.",
+          "psu_wattage": "GPU TDP + CPU TDP + 150W (여유)",
+          "efficiency": "80 PLUS Gold 이상 권장",
+          "rationale": "불안정한 파워는 블루스크린, 부품 손상을 유발할 수 있음."
+        }
+      },
+      {
+        "target": "CPU → 메인보드",
+        "condition": {
+          "cpu_socket": "AM5"
+        },
+        "recommendation": {
+          "note": "CPU 소켓과 메인보드 소켓이 반드시 일치해야 함.",
+          "mainboard_chipset": "B650, X670 권장",
+          "bios_update_note": "일부 보드는 BIOS 업데이트가 필요할 수 있음.",
+          "upgrade": "Intel은 i시리즈와 Ultra 시리즈가 있으며 두 시리즈는 소켓이 다름. 주 사용도가 비디오 편집, 디자인이 아니거나 가격대가 150만 원이라면 추천하지마. 그리고 중고가 방어 견적에도 울트라 시리즈는 포함하지마"
+        }
+      },
+      {
+        "target": "케이스 → GPU",
+        "condition": "일반적",
+        "recommendation": "반드시 사이즈가 맞는 것을 골라야함. ATX, mATX, Mini-ITX 고려하기"
+      }
+    ]
+  }

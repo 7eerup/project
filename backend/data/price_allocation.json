@@ -1,0 +1,89 @@
+{
+    "category": "예산 분배 우선순위",
+    "rules": [
+      {
+        "condition": {
+          "main_use": "게이밍, FPS 위주"
+        },
+        "recommendation": {
+          "priority": [
+            "CPU 성능을 높여야 함. 게임은 단일 코어 성능에 민감.",
+            "해상도에 맞춰 GPU 스펙을 올림. 4K면 GPU 예산을 전체의 40% 이상 할당.",
+            "RAM은 32GB까지만. 그 이상은 오버스펙."
+          ],
+          "budget_ratio": {
+            "CPU": "25~30%",
+            "GPU": "40~50%",
+            "RAM": "10~15%",
+            "SSD": "10~15%",
+            "나머지": "10%"
+          },
+          "note": "게이밍은 GPU가 중요하지만, CPU가 너무 낮으면 병목 발생. 밸런스가 핵심."
+        }
+      },
+      {
+        "condition": {
+          "main_use": "3D 툴, 비디오 작업"
+        },
+        "recommendation": {
+          "priority": [
+            "GPU 성능에 집중. CUDA 코어, VRAM이 많을수록 렌더링 속도 향상.",
+            "CPU도 멀티코어 성능을 고려. 8코어 이상 권장.",
+            "RAM은 최대한 튜닝된 램을 선택. 가격 타이트하면 일반 램도 허용."
+          ],
+          "budget_ratio": {
+            "GPU": "50~60%",
+            "CPU": "20~25%",
+            "RAM": "15~20%",
+            "SSD": "10~15%"
+          },
+          "note": "GPU가 작업의 70~80%를 담당. 나머지 부품은 GPU를 뒷받침하도록."
+        }
+      },
+      {
+        "condition": {
+          "budget_spare": "남는 가격이 있다"
+        },
+        "recommendation": {
+          "upgrade_priority": [
+            "SSD를 SK하이닉스 제품으로 업그레이드. RAM이 달린 제품은 성능이 더 안정적.",
+            "그다음은 케이스 통풍성, 파워 효율 등 품질 업그레이드."
+          ],
+          "note": "예산 여유가 있으면 용량보다 품질에 투자. 안정성과 수명이 늘어남."
+        }
+      },
+      {
+        "condition": {
+          "quote_type": "업그레이드형"
+        },
+        "recommendation": {
+          "strategy": "메인보드와 파워를 조금 더 상위 제품으로 선택. 나중에 CPU나 GPU만 바꿔도 성능 업그레이드가 가능하도록 미리 확보.",
+          "rationale": "업그레이드형은 향상 확장성이 목표. 보드와 파워가 낮으면 나중에 호환성 문제 발생."
+        }
+      },
+      {
+        "condition": {
+          "budget_tight": true
+        },
+        "recommendation": {
+          "strategy": "용량만 맞추기. 브랜드보다는 가성비 중심. RAM은 일반 제품, SSD는 용량만 충분한 저가 제품.",
+          "warning": "품질이 낮아지므로 A/S와 내구성을 확인할 것. 과도한 저가 선택은 자제."
+        }
+      },
+    {
+      "condition": {
+        "monitor_resolution": "4K",
+        "main_use": "게이밍",
+        "budget_max_krw": 2499999
+      },
+      "recommendation": {
+        "action": "raise_budget",
+        "min_budget_krw": 2500000,
+        "user_message": "4K 해상도에서 게이밍을 원한다면, GPU/파워/전체 밸런스를 고려했을 때 최소 250만 원 이상의 예산이 필요합니다. 따라서 이 견적은 250만 원 기준으로 구성합니다."
+      }
+    }
+    ]
+
+}
+
+  

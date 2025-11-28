@@ -1,0 +1,65 @@
+{
+    "rules": [
+      {
+        "condition": {
+          "monitor_resolution": "4K",
+          "main_use": "게이밍",
+          "budget_min": 2500000
+        },
+        "recommendation": {
+          "vram_min": "20GB",
+          "vsu_min": 800,
+          "rationale": "4K 게이밍은 고해상도에서 프레임을 유지하려면 VRAM과 VSU가 충분해야 함. 250만 원 이상 예산으로 가능.",
+          "examples": ["RTX 4080", "RTX 4090", "RTX 4090 Ti", "RTX 4080 Ti", "RTX 5080", "RTX 5090", "RTX 5090 Ti"]
+        }
+      },
+      {
+        "condition": {
+          "monitor_resolution": "QHD",
+          "main_use": "게이밍",
+          "budget_min": 1500000
+        },
+        "recommendation": {
+          "vram_min": "12GB",
+          "examples": ["RTX 4060", "RX 7600", "RTX 4070", "RTX 4070 Ti", "RTX 5070", "RTX 5070 Ti"]
+        }
+      },
+      {
+        "condition": {
+          "main_use": "영상편집"
+        },
+        "recommendation": {
+          "note": "4K 편집은 VRAM 12GB 이상, CUDA 코어 많은 GPU가 유리.",
+          "tier_by_budget": {
+            "120만원 미만": "RTX 4060 (VRAM 8GB, CUDA 3072개)",
+            "120~200만원": "RTX 4070 (VRAM 12GB, CUDA 5888개)",
+            "200만원 이상": "RTX 4070 Ti / 4080 이상"
+          },
+          "software_notes": {
+            "어도비 프리미어 프로": "CUDA 가속 지원 GPU 권장",
+            "다빈치 리졸브": "VRAM 많을수록 실시간 재생이 부드러움"
+          }
+        }
+      },
+      {
+        "condition": {
+          "main_use": "일반 작업 (문서, 웹서핑)"
+        },
+        "recommendation": {
+          "note": "내장 그래픽이나 최소한의 외장 GPU로 충분함.",
+          "tier": "내장 그래픽 or GTX 1650 / RX 6400 급",
+          "rationale": "고사양 GPU는 전력 소모만 높이고 실제 성능 차이 거의 없음."
+        }
+      },
+      {
+        "condition": {
+          "main_use": "3D 디자인/모델링"
+        },
+        "recommendation": {
+          "note": "CUDA 코어 많은 GPU가 유리. RTX 4070 Ti 이상 권장",
+          "tier": "RTX 4070 Ti 이상",
+          "rationale": "3D 디자인/모델링은 높은 CUDA 코어 수가 필요함."
+        }
+      }
+    ]
+  }

@@ -1,0 +1,58 @@
+{
+    "category": "CPU 범용 추천 기준",
+    "rules": [
+      {
+        "condition": {
+          "main_use": "게이밍",
+          "budget": "일반적"
+        },
+        "recommendation": {
+          "note": "게이밍은 단일 코어 성능이 중요. 6코어 이상 권장.",
+          "tier_by_budget": {
+            "80만원 미만": "Intel i5-12400F / AMD Ryzen 5 5600",
+            "80~120만원": "Intel i5-13400F / AMD Ryzen 5 7500F",
+            "120만원 이상": "Intel i7-13700F / AMD Ryzen 7 7700X"
+          },
+          "key_considerations": [
+            "게임 대부분은 8코어 이상 활용하지 못함",
+            "CPU가 GPU보다 싸면 병목 현상 발생",
+            "오버클럭은 i5-K나 Ryzen X 시리즈에서만 가능"
+          ]
+        }
+      },
+      {
+        "condition": {
+          "main_use": "게이밍",
+          "fav_games": "fps 게임, 고사양 게임"
+        },
+        "recommendation": {
+          "note": "CPU성능이 높아야 하고 안전하게 라이젠 9600이상 모델 추천",
+          "tier_by_budget": {
+            "120만원 이하": "즐기시는 게임을 원활하게 즐가기 위해서 가격대를 높이는 것을 추천드립니다."
+          },
+          "key_considerations": [
+            "어떤 해상도를 사용하냐가 중요. FHD 기준 라이젠7-7800X3D는 사용해야함",
+            "CPU가 GPU보다 싸면 병목 현상 발생",
+            "오버클럭은 i5-K나 Ryzen X 시리즈에서만 가능"
+          ]
+        }
+      },
+      {
+        "condition": {
+          "main_use": "영상편집"
+        },
+        "recommendation": {
+          "note": "영상 렌더링은 멀티코어 활용도 높음. 8코어 이상 권장.",
+          "tier_by_budget": {
+            "100만원 미만": "Intel i5-13400F (10코어) / AMD Ryzen 5 7600 (6코어)",
+            "100~150만원": "Intel i7-13700F (16코어) / AMD Ryzen 7 7700X (8코어)",
+            "150만원 이상": "Intel i9-13900F / AMD Ryzen 9 7900X"
+          },
+          "software_notes": {
+            "프리미어 프로": "인코딩 시 인텔 퀵싱크 가속 유용",
+            "다빈치 리졸브": "코어 수 많을수록 렌더링 속도 향상"
+          }
+        }
+      }
+    ]
+  }
