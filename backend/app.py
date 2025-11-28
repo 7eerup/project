@@ -38,7 +38,6 @@ class PcRequest:
     favProgramOrGame: List[str]   # , 기준으로 파싱된 프로그램/게임 리스트
     design: str               # 선택한 디자인
     storage: str              # 선택한 용량
-    windows: str              # 포함 여부 (문자열 그대로, 필요하면 나중에 bool로 가공)
     monitor: str              # 해상도 정보
 
 def parse_request(payload: dict) -> PcRequest:
@@ -51,7 +50,6 @@ def parse_request(payload: dict) -> PcRequest:
         favProgramOrGame=fav_list,
         design=str(payload.get("design", "")),
         storage=str(payload.get("storage", "")),
-        windows=str(payload.get("windows", "")),
         monitor=str(payload.get("monitor", "")),
     )
 
@@ -67,7 +65,6 @@ def build_prompt(req: PcRequest) -> str:
 - 자주 사용하는 프로그램/게임: {fav_list_str}
 - 선호 디자인: {req.design}
 - SSD 용량 조건: {req.storage} 이상
-- 윈도우 포함 여부: {req.windows}
 - 모니터 해상도: {req.monitor}
 
 [참고 자료]
@@ -177,7 +174,6 @@ class PcQuoteRequest(BaseModel):
     favProgramOrGame: str = Field(default="", json_schema_extra={"example": "오버워치, 로스트아크"})
     design: str = Field(..., json_schema_extra={"example": "블랙 & 심플"})
     storage: str = Field(..., json_schema_extra={"example": "1TB"})
-    windows: str = Field(..., json_schema_extra={"example": "포함"})
     monitor: str = Field(..., json_schema_extra={"example": "QHD"})
 
 # @app.post('/parse', tags=[quote_tag], summary = "json 파싱")
