@@ -2,8 +2,13 @@
 벡터 데이터베이스 생성 및 문서 업로드 파일입니다. 컨텍스트 문서 수정 시 실행하면 됩니다.
 """
 from openai import OpenAI
+import os
+from dotenv import load_dotenv
 
-client = OpenAI(api_key="")
+load_dotenv()
+
+API_KEY = os.getenv("OPENAI_API_KEY")
+client = OpenAI(api_key=API_KEY)
 
 # 컨텍스트 문서 업로드
 file_ids = []

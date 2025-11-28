@@ -38,6 +38,7 @@ class PcRequest:
     favProgramOrGame: List[str]   # , 기준으로 파싱된 프로그램/게임 리스트
     design: str               # 선택한 디자인
     storage: str              # 선택한 용량
+    windows: str              # 포함 여부 (문자열 그대로, 필요하면 나중에 bool로 가공)
     monitor: str              # 해상도 정보
 
 def parse_request(payload: dict) -> PcRequest:
@@ -50,6 +51,7 @@ def parse_request(payload: dict) -> PcRequest:
         favProgramOrGame=fav_list,
         design=str(payload.get("design", "")),
         storage=str(payload.get("storage", "")),
+        windows=str(payload.get("windows", "")),
         monitor=str(payload.get("monitor", "")),
     )
 
@@ -65,6 +67,7 @@ def build_prompt(req: PcRequest) -> str:
 - 자주 사용하는 프로그램/게임: {fav_list_str}
 - 선호 디자인: {req.design}
 - SSD 용량 조건: {req.storage} 이상
+- 윈도우 포함 여부: {req.windows}
 - 모니터 해상도: {req.monitor}
 
 [참고 자료]
@@ -78,13 +81,15 @@ def build_prompt(req: PcRequest) -> str:
 [규칙]
 0. 
 - 절대로 자연어 설명, 사과문, 링크를 JSON 앞뒤에 쓰지 마라.
-- 출력은 아래 JSON 객체 하나만 반환하라.
+- 출력은 아래 JSON 객체 하나를 반환한다. 반드시 형식을 지킨다.
 - JSON 밖에 다른 텍스트(문장, 줄바꿈, 주석, 출처 링크 등)를 절대로 포함하지 마라.
+- 반드시 상세 부품명을 찾아라. 절대로 단순 스펙 나열은 하면 안된다. 예를 들어 ram: 16gb ddr4와 같은 단순 스펙 나열이 아닌 스팩을 만족하는 ram:삼성전자 DDR4-3200 (16GB)처럼 찾아라
+- 반드시 찾은 제품명에는 브랜드명을 포함하라. 또 다나와, 네이버 스토어 기준으로 판매중인 제품을 우선으로 하라.
 1. file_search 도구로 위 가이드라인들을 검색해, 현재 사용자 조건에 맞는 규칙을 찾아라.
 2. price_allocation에서 action: "raise_budget" 규칙이 발견되면:
    - 입력 예산이 부족하다는 뜻이다.
    - 해당 규칙의 설명/최소 예산을 참고해, 내부적으로 예산을 상향 조정한 뒤 그 기준으로 견적을 구성하라.
-3. web_search 도구는 GPU/CPU/SSD의 세대 및 대략적인 가격대를 참고할 때만 사용하라.
+3. web_search 도구는 GPU/CPU/SSD의 세대 및 대략적인 가격대를 참고해라. 반드시 현재 판매중인 제품을 우선으로 찾아라.
 4. RAM은 최소 16GB, 스트리밍/영상 편집/고사양 작업이면 32GB 이상, 게이밍은 32GB까지만 추천하라.
 5. 파워는 총 소비전력의 2배 이상, 고급 칩셋/고성능 GPU일수록 여유있게, 마이크로닉스/시소닉 등의 대기업 파워를 우선 선택하라.
 6. 호환성이 맞지 않는 조합(DDR4 보드 + DDR5 메모리, 소켓 불일치 등)은 절대 추천하지 말고, 가이드라인에 맞는 조합으로 수정하라.
@@ -172,7 +177,7 @@ class PcQuoteRequest(BaseModel):
     favProgramOrGame: str = Field(default="", json_schema_extra={"example": "오버워치, 로스트아크"})
     design: str = Field(..., json_schema_extra={"example": "블랙 & 심플"})
     storage: str = Field(..., json_schema_extra={"example": "1TB"})
-    # windows: str = Field(..., json_schema_extra={"example": "포함"})
+    windows: str = Field(..., json_schema_extra={"example": "포함"})
     monitor: str = Field(..., json_schema_extra={"example": "QHD"})
 
 # @app.post('/parse', tags=[quote_tag], summary = "json 파싱")
